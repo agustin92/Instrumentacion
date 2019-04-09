@@ -2,6 +2,8 @@ import visa
 
 # Inicializamos el Resource Manager de visa. En el caso de pyvisa-py, se coloca
 # el '@py'. Sino, con NiVisa, va vacío.
+#Hola mundo!
+
 
 rm = visa.ResourceManager('@py')
 
