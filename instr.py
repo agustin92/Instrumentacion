@@ -26,7 +26,26 @@ class Tek:
     def set_amp(self, value):
         #Settea la amplitud (en V) del instrumento.
         self.inst.query("SOUR1:VOLT:AMPL {}".format(value))
+        
+
+class Osciloscopio:
     
+    def __init__(self,rm,num):
+        data = rm.list_resources()
+        self.inst = rm.open_resource('{}'.format(data[num]))
+        self.parametros = None
+        
+    def identity(self):
+        #Devuelve el nombre del instrumento según el fabricante.
+        name = self.inst.query("*IDN?")
+        print("Name of this device: {}".format(name))
+    
+    def get_parameters(self):
+        if self.parameters is None:
+            self.parameters = xze, xin, yze, ymu, yoff = self.inst.query_ascii_values('WFMPRE:XZE?;XIN?;YZE?;YMU?;YOFF?;', separator=';')
+    
+    def curva(self):
+        data = self.inst.query.
 
 # Inicializamos el instrumento num = 0 en la lista (si tenemos uno solo 
 # conectado, es trivial)      
