@@ -7,6 +7,7 @@ Created on Sun Apr 28 00:04:42 2019
 
 import pyaudio
 import numpy as np
+import wave 
 from matplotlib import pyplot as plt
 
 class PlacaAudio():
@@ -32,3 +33,15 @@ class PlacaAudio():
         self.stream.stop_stream()
         self.stream.close()
         return np.fromstring(b''.join(frames),dtype=np.int16)
+    
+    def play_sin(self, frec, duration=2, volume=0.5, sr=44100):
+        length = sr*duration
+        seno = (np.sin(2*np.pi*np.arange(length)*frec/sr)).astype(np.float32)
+        self.stream = self.p.open(format=pyaudio.paFloat32,channels=1,rate=sr,output=True)
+        self.stream.write(volume*seno)
+        
+    def sweep_sin(self, fi, ff, step, duration=3, volume =0.5):
+        frecs = np.linspace(fi,ff,step)
+        for i in frecs:
+            self.play_sin(i,duration, volume)
+        
