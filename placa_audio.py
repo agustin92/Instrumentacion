@@ -14,6 +14,22 @@ class PlacaAudio():
     def __init__(self):
         self.p = pyaudio.PyAudio()
         
+    #Funcion para saber cuantos dispositivos de audio hay en la placa    
+    def info_devices(self):
+        info = self.p.get_host_api_info_by_index(0)
+        numdevices = info.get('deviceCount')
+
+        for i in range (0,numdevices):
+            if self.p.get_device_info_by_host_api_device_index(0,i).get('maxInputChannels')>0:
+                print ("Input Device id ", i, " - ", self.p.get_device_info_by_host_api_device_index(0,i).get('name'))
+
+            if self.p.get_device_info_by_host_api_device_index(0,i).get('maxOutputChannels')>0:
+                print ("Output Device id ", i, " - ", self.p.get_device_info_by_host_api_device_index(0,i).get('name'))
+
+        devinfo = self.p.get_device_info_by_index(1)
+        print ("Selected device is ",devinfo.get('name'))
+        
+        
     def record(self,duracion,sr=44100,CHUNK=1024,FORMAT = pyaudio.paInt16, CHANNELS = 2):
         self.stream = self.p.open(format=FORMAT, 
                                   channels=CHANNELS, 
