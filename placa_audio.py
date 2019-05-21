@@ -68,6 +68,19 @@ class PlacaAudio():
         for i in frecs:
             self.play_sin(i,duration, volume)
             print(i)
+    
+    def ch_separator(self,data):
+        ch1=[]
+        ch2=[]
+        i=0
+        for elemento in data:
+            if i%2==0:
+                ch1.append(elemento)
+            else:
+                ch2.append(elemento)
+            i += 1
+        return ch1,ch2
+                
 
 
 
@@ -157,7 +170,22 @@ rm = visa.ResourceManager()
 data = rm.list_resources()
 
 #%%
+      
 
-with open('resultados.txt', 'w') as f:
-    for renglon in result:
-        f.write(str(renglon))
+plt.xlabel('Tiempo (s)')
+plt.ylabel('Voltaje (mV)')  
+plt.plot(vd[50:],v2[50:],'-')
+
+
+#%%
+
+tiempo,data = p.record(0.1,CHANNELS = 2,sr=192000)
+ch1,ch2 = p.ch_separator(data)
+plt.plot(ch1,'.-')
+plt.plot(ch2,'.-')
+
+ch1 = np.array(ch1)
+ch2 = np.array(ch2)
+
+#plt.grid()
+plt.plot(data,'.-')
