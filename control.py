@@ -26,22 +26,35 @@ class ControlArduino(INODriver):
     senal = QuantityFeat('senal',setter=False)
     
 with ControlArduino.via_packfile('ControlArduino.pack.yaml') as board:
-    setpoint = 500
+    setpoint = 1000
     i = 0
     j = 0
     volt= []
     board.rampa = 0
     time.sleep(2)
-    kp= 0.3
+    kp= 0.04
+    ki= 0.02
+    kd= 0.002
     p=0
+    i=0
+    d=0
+    ti = time.clock()
+    lasterror= 0
     while p < 255 and j<300:
         aux = float(board.senal)
         error = (setpoint - aux)
+        tf = time.clock()
+        deltat = tf-ti
         p = p + int(kp*error)
-        board.rampa = p
+        i = i + int(ki*error*deltat)
+        d = d + int(kd*(error-lasterror)/deltat)
+        board.rampa = p + i 
         volt.append(aux)
+        ti = tf
+        lasterror= error
         j = j +1 
         print(p)
+#        time.sleep(0.5)
 #        print(board.rampa)
 #        print(aux)
 plt.plot(volt)
@@ -50,4 +63,4 @@ plt.ylabel('Voltaje (mV)')
 plt.show()  
     
 npvolt = np.array(volt)
-np.savetxt('C:/Users/Agustin/Documents/Instrumentacion/Clase 10/control_P_500mV_setpoint_kp05.txt',npvolt)  
+np.savetxt('C:/Users/Agustin/Documents/Instrumentacion/Clase 11/control_PID_1000mV_setpoint_kp004_ki002_kd0002_p200.txt',npvolt)  
